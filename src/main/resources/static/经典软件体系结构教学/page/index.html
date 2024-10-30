@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>经典软件体系结构教学</title>
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    .container{
+      margin-top: 80px;
+      text-align: center;
+    }
+    .container .file{
+      margin-top: 10px;
+    }
+    .container .main{
+      margin: 50px auto;
+      display: flex;
+      justify-content: space-evenly;
+      width: 1000px;
+    }
+    .container .main .choice{
+      text-decoration: none;
+      width: 150px;
+      height: 50px;
+      font-size: 20px;
+      color: #000;
+      font-weight: 700;
+      line-height: 50px;
+      border: 1px solid #000;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #fefcfc;
+    }
+    .container .main .active{
+      background-color: #ed0c0c;
+    }
+    .container .result{
+      margin: 10px auto;
+      display: flex;
+      justify-content: space-between;
+      width: 900px;
+      border: 2px solid #000;
+      text-align: left;
+    }
+    .result .left{
+      width: 560px;
+      height: 1000px;
+    }
+    .result .left img{
+      margin: 20px 5px;
+      width: 540px;
+      height: auto;
+      border: 1px solid #000;
+      display: none;
+    }
+    .result .left pre{
+      background-color: #dfdbdb;
+    }
+    .result .left .code .original-code{
+      width: 560px;
+      height: 670px;
+      border: 1px solid #000;
+      overflow: scroll;
+      display: none;
+    }
+    .result .left span{
+      padding: 5px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .result .left .img .active{
+      display: block;
+    }
+    .result .left .code .active{
+      display: block;
+    }
+    .result .right{
+      width: 320px;
+      height: 500px;
+    }
+    .result .right span{
+      padding: 5px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .result .right .sort-txt{
+      margin-top: 10px;
+      padding: 20px;
+      overflow: scroll;
+      width: 320px;
+      height: 450px;
+      font-size: 20px;
+      border: 1px solid #000;
+      border-radius: 1px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>经典软件体系结构教学</h1>
+    <div class="file">
+      <input type="file" class="upload">
+    </div>
+    <div class="main">
+      <a href="#" data-id="0" class="choice">主程序-子程序</a>
+      <a href="#" data-id="1" class="choice">面向对象</a>
+      <a href="#" data-id="2" class="choice">事件系统</a>
+      <a href="#" data-id="3" class="choice">管道过滤器</a>
+    </div>
+    <div class="result">
+      <div class="left">
+        <div class="img">
+          <span>原理图：</span>
+          <span>暂无</span>
+          <img src="./asset/main.png" alt="主程序-主程序原理图">
+          <img src="./asset/oop.png" alt="面向对象原理图">
+          <img src="./asset/event.png" alt="事件系统原理图">
+          <img src="./asset/pipe_filter.png" alt="管道-过滤原理图">
+        </div>
+        <div class="code">
+          <span>源代码：</span>
+          <span>暂无</span>
+          <div class="original-code">
+            <pre>
+              public class demo1 {
+              
+                private ArrayList<String> kwicList = new ArrayList<String>();
+                private ArrayList<String> lineTxt = new ArrayList<String>();
+                private BufferedReader inputFile;
+                private BufferedWriter outputFile;
+            
+                public static void main(String[] args) {
+                        
+            
+                    demo1 kwic = new demo1();
+                    kwic.input("E:\\input.txt");
+                    kwic.shift();
+                    kwic.alphabetizer();
+                    kwic.output("E:\\output.txt");
+                }
+            
+            
+                public void input(String fileName) {
+                        
+                    try {
+                        
+                        inputFile = new BufferedReader(new FileReader(fileName));
+                    } catch (Exception e) {
+                        
+                        e.printStackTrace();
+                    }
+                    String line;
+                    try {
+                        
+                        while ((line = inputFile.readLine()) != null) {
+                        
+                            lineTxt.add(line);
+                        }
+                    } catch (IOException e) {
+                        
+                        e.printStackTrace();
+                    }
+                }
+            
+                public void output(String filename){
+                        
+                    Iterator<String> it = kwicList.iterator();
+                    try {
+                        
+                        outputFile = new BufferedWriter(new FileWriter(filename));
+                        while (it.hasNext()) {
+                        
+                            outputFile.write(it.next()+"\n");
+                        }
+                    }catch (IOException e){
+                        
+                        e.printStackTrace();
+                    }finally {
+                        
+                        try {
+                        
+                            if (outputFile!=null) {
+                        
+                                outputFile.close();
+                            }
+                        } catch (IOException e) {
+                        
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            
+                public void shift() {
+                        
+                    //获取每个单词，存入tokens
+                    Iterator<String> it = lineTxt.iterator();
+                    while (it.hasNext()) {
+                        
+                        StringTokenizer token = new StringTokenizer(it.next());
+                        ArrayList<String> tokens = new ArrayList<String>();
+                        int i = 0;
+                        //循环添加单词
+                        int count = token.countTokens();
+                        while (i < count) {
+                        
+                            tokens.add(token.nextToken());
+                            i++;
+                        }
+            
+                        //display(tokens);
+                        //切割各个单词，不断改变起始值和利用loop实现位移。
+                        for (i = 0; i < count; i++) {
+                        
+                            StringBuffer lineBuffer = new StringBuffer();
+                            int index = i;
+                            for (int f = 0; f < count; f++) {
+                        
+                            //从头继续位移
+                                if (index >= count)
+                                    index = 0;
+                            //存入StringBuffer
+                                lineBuffer.append(tokens.get(index));
+                                lineBuffer.append(" ");
+                                index++;
+                            }
+                            String tmp = lineBuffer.toString();
+                            kwicList.add(tmp);
+                        }
+                    }
+            
+                }
+            
+            
+                public void alphabetizer() {
+                        
+                    Collections.sort(this.kwicList, new AlphabetizerComparator());
+                }
+            
+                private class AlphabetizerComparator implements Comparator<String> {
+                        
+                    @Override
+                    public int compare(String o1, String o2) {
+                        
+                        if (o1 == null && o2 == null) {
+                        
+                            throw new NullPointerException();
+                        }
+                        int compareValue = 0;
+                        char o1c = o1.toLowerCase().charAt(0); //忽略大小写
+                        char o2c = o2.toLowerCase().charAt(0); //忽略大小写
+                        compareValue = o1c - o2c;
+                        return compareValue;
+            
+                    }
+            
+                }
+            }
+            </pre>
+          </div>
+          <div class="original-code">
+            <pre>
+              // input类
+              public class Input {
+            
+                private ArrayList<String> lineTxt = new ArrayList<String>();
+            
+                public ArrayList<String> getLineTxt() {
+                        
+                    return lineTxt;
+                }
+            
+                public void input(String fileName) {
+                        
+                    BufferedReader inputFile = null;
+                    try {
+                        
+                        inputFile = new BufferedReader(new FileReader(fileName));
+                    } catch (Exception e) {
+                        
+                        e.printStackTrace();
+                    }
+                    String line;
+                    try {
+                        
+                        while ((line = inputFile.readLine()) != null) {
+                        
+                            lineTxt.add(line);
+                        }
+                    } catch (IOException e) {
+                        
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            // Shift类
+            public class Shift {
+            
+              private ArrayList<String> kwicList = new ArrayList<String>();
+              private ArrayList<String> lineTxt;
+          
+              public Shift( ArrayList<String> lineTxt) {
+                      
+                  this.lineTxt = lineTxt;
+              }
+          
+              public ArrayList<String> getKwicList() {
+                      
+                  return kwicList;
+              }
+          
+          
+              public ArrayList<String> getLineTxt() {
+                      
+                  return lineTxt;
+              }
+          
+          
+              public void shift() {
+                      
+                  //获取每个单词，存入tokens
+                  Iterator<String> it = lineTxt.iterator();
+                  while (it.hasNext()) {
+                      
+                      StringTokenizer token = new StringTokenizer(it.next());
+                      ArrayList<String> tokens = new ArrayList<String>();
+                      int i = 0;
+                      //循环添加单词
+                      int count = token.countTokens();
+                      while (i < count) {
+                      
+                          tokens.add(token.nextToken());
+                          i++;
+                      }
+          
+                      //display(tokens);
+                      //切割各个单词，不断改变起始值和利用loop实现位移。
+                      for (i = 0; i < count; i++) {
+                      
+                          StringBuffer lineBuffer = new StringBuffer();
+                          int index = i;
+                          for (int f = 0; f < count; f++) {
+                      
+                              //从头继续位移
+                              if (index >= count)
+                                  index = 0;
+                              //存入StringBuffer
+                              lineBuffer.append(tokens.get(index));
+                              lineBuffer.append(" ");
+                              index++;
+                          }
+                          String tmp = lineBuffer.toString();
+                          kwicList.add(tmp);
+                      }
+                  }
+          
+              }
+          }
+            // Alphabetizer类
+            public class Alphabetizer {
+            
+              private ArrayList<String> kwicList;
+          
+              public Alphabetizer(ArrayList<String> kwicList) {
+                      
+                  this.kwicList = kwicList;
+              }
+          
+              public ArrayList<String> getKwicList() {
+                      
+                  return kwicList;
+              }
+          
+              public void sort() {
+                      
+                  Collections.sort(this.kwicList, new AlphabetizerComparator());
+              }
+          
+              private class AlphabetizerComparator implements Comparator<String> {
+                      
+                  @Override
+                  public int compare(String o1, String o2) {
+                      
+                      if (o1 == null && o2 == null) {
+                      
+                          throw new NullPointerException();
+                      }
+                      int compareValue = 0;
+                      char o1c = o1.toLowerCase().charAt(0); //忽略大小写
+                      char o2c = o2.toLowerCase().charAt(0); //忽略大小写
+                      compareValue = o1c - o2c;
+                      return compareValue;
+          
+                  }
+          
+              }
+          }
+            // Output类
+            public class Output {
+            
+              private ArrayList<String> kwicList;
+              private BufferedWriter outputFile;
+          
+              public Output(ArrayList<String> kwicList) {
+                      
+                  this.kwicList = kwicList;
+              }
+          
+              public void output(String filename){
+                      
+                  Iterator<String> it = kwicList.iterator();
+                  try {
+                      
+                      outputFile = new BufferedWriter(new FileWriter(filename));
+                      while (it.hasNext()) {
+                      
+                          outputFile.write(it.next()+"\n");
+                      }
+                  }catch (IOException e){
+                      
+                      e.printStackTrace();
+                  }finally {
+                      
+                      try {
+                      
+                          if (outputFile!=null) {
+                      
+                              outputFile.close();
+                          }
+                      } catch (IOException e) {
+                      
+                          e.printStackTrace();
+                      }
+                  }
+              }
+          }
+
+            // Main类
+            public class Main {
+              
+              public static void main(String[] args) {
+                      
+                  Input input = new Input();
+                  input.input("E:\\input.txt");
+                  Shift shift = new Shift(input.getLineTxt());
+                  shift.shift();
+                  Alphabetizer alphabetizer = new Alphabetizer(shift.getKwicList());
+                  alphabetizer.sort();
+                  Output output = new Output(alphabetizer.getKwicList());
+                  output.output("E:\\output.txt");
+          
+              }
+          }
+            </pre>
+          </div>
+          <div class="original-code">
+            <pre>
+              // Subject抽象类
+              public class Subject {
+            
+
+                //观察者数组
+                private List `<`Observer`>`vector = new LinkedList<>();
+            
+            
+                //增加一个观察者
+                public void addObserver(Observer observer) {
+                        
+                    vector.add(observer);
+                }
+            
+                //删除一个观察者
+                public void deleteObserver(Observer observer) {
+                        
+                    vector.remove(observer);
+                }
+            
+                //通知所有观察者
+                public void notifyAllObserver() {
+                        
+                    for(Observer observer : vector) {
+                        
+                        observer.toDo();
+                    }
+                }
+            
+                // 通知特定观察者
+                public void notifyOneObserver(int i) {
+                        
+                    vector.get(i).toDo();
+                }
+            
+            }	
+
+            // KWIC具体主题类
+            public class KWICSubject extends Subject{
+            
+              public void startKWIC(){   
+                  for (int i = 0;i <= 3;i++){                  
+                      super.notifyOneObserver(i);
+                  }
+              }
+          }
+            // Observer抽象观察者类
+            public interface Observer {
+            
+              void toDo();
+          }
+            // Input 观察者类
+            public class Input implements Observer{
+            
+
+              private ArrayList<String> lineTxt = new ArrayList<String>();
+          
+              public ArrayList<String> getLineTxt() {
+                      
+                  return lineTxt;
+              }
+              private String fileName;
+          
+              public Input(String fileName) {
+                      
+                  this.fileName = fileName;
+              }
+          
+              @Override
+              public void toDo() {
+                      
+                  BufferedReader inputFile = null;
+                  try {
+                      
+                      inputFile = new BufferedReader(new FileReader(fileName));
+                  } catch (Exception e) {
+                      
+                      e.printStackTrace();
+                  }
+                  String line;
+                  try {
+                      
+                      while ((line = inputFile.readLine()) != null) {
+                      
+                          lineTxt.add(line);
+                      }
+                  } catch (IOException e) {
+                      
+                      e.printStackTrace();
+                  }
+              }
+          }
+
+          // Shift观察者类
+          public class Shift implements Observer {
+            
+            private ArrayList<String> kwicList = new ArrayList<String>();
+            private ArrayList<String> lineTxt;
+        
+            public Shift( ArrayList<String> lineTxt) {
+                    
+                this.lineTxt = lineTxt;
+            }
+        
+            public ArrayList<String> getKwicList() {
+                    
+                return kwicList;
+            }
+        
+        
+            public ArrayList<String> getLineTxt() {
+                    
+                return lineTxt;
+            }
+        
+            @Override
+            public void toDo() {
+                    
+                //获取每个单词，存入tokens
+                Iterator<String> it = lineTxt.iterator();
+                while (it.hasNext()) {
+                    
+                    StringTokenizer token = new StringTokenizer(it.next());
+                    ArrayList<String> tokens = new ArrayList<String>();
+                    int i = 0;
+                    //循环添加单词
+                    int count = token.countTokens();
+                    while (i < count) {
+                    
+                        tokens.add(token.nextToken());
+                        i++;
+                    }
+        
+                    //display(tokens);
+                    //切割各个单词，不断改变起始值和利用loop实现位移。
+                    for (i = 0; i < count; i++) {
+                    
+                        StringBuffer lineBuffer = new StringBuffer();
+                        int index = i;
+                        for (int f = 0; f < count; f++) {
+                    
+                            //从头继续位移
+                            if (index >= count)
+                                index = 0;
+                            //存入StringBuffer
+                            lineBuffer.append(tokens.get(index));
+                            lineBuffer.append(" ");
+                            index++;
+                        }
+                        String tmp = lineBuffer.toString();
+                        kwicList.add(tmp);
+                    }
+                }
+        
+            }
+        
+        }   
+            // Alphabetizer 观察者类
+            public class Alphabetizer implements Observer {
+            
+              private ArrayList<String> kwicList;
+          
+              public Alphabetizer(ArrayList<String> kwicList) {
+                      
+                  this.kwicList = kwicList;
+              }
+          
+              public ArrayList<String> getKwicList() {
+                      
+                  return kwicList;
+              }
+          
+              @Override
+              public void toDo() {
+                      
+                  Collections.sort(this.kwicList, new AlphabetizerComparator());
+              }
+          
+              private class AlphabetizerComparator implements Comparator<String> {
+                      
+                  @Override
+                  public int compare(String o1, String o2) {
+                      
+                      if (o1 == null && o2 == null) {
+                      
+                          throw new NullPointerException();
+                      }
+                      int compareValue = 0;
+                      char o1c = o1.toLowerCase().charAt(0); //忽略大小写
+                      char o2c = o2.toLowerCase().charAt(0); //忽略大小写
+                      compareValue = o1c - o2c;
+                      return compareValue;
+          
+                  }
+          
+              }
+          
+          }
+
+           // Output观察类
+           public class Output implements Observer {
+            
+            private ArrayList<String> kwicList;
+            private BufferedWriter outputFile;
+            private String filename;
+            public Output(ArrayList<String> kwicList,String filename) {
+                    
+                this.kwicList = kwicList;
+                this.filename = filename;
+            }
+        
+            @Override
+            public void toDo(){
+                    
+                Iterator<String> it = kwicList.iterator();
+                try {
+                    
+                    outputFile = new BufferedWriter(new FileWriter(filename));
+                    while (it.hasNext()) {
+                    
+                        outputFile.write(it.next()+"\n");
+                    }
+                }catch (IOException e){
+                    
+                    e.printStackTrace();
+                }finally {
+                    
+                    try {
+                    
+                        if (outputFile!=null) {
+                    
+                            outputFile.close();
+                        }
+                    } catch (IOException e) {
+                    
+                        e.printStackTrace();
+                    }
+                }
+            }
+        
+        }   
+            //测试类
+            public class Main {
+            
+              public static void main(String[] args) {
+                      
+                  //创建主题
+                  KWICSubject kwicSubject = new KWICSubject();
+                  //创建观察者
+                  Input input = new Input("E:\\input.txt");
+                  Shift shift = new Shift(input.getLineTxt());
+                  Alphabetizer alphabetizer = new Alphabetizer(shift.getKwicList());
+                  Output output = new Output(alphabetizer.getKwicList(), "E:\\output.txt");
+          
+                  // 将观察者加入主题
+                  kwicSubject.addObserver(input);
+                  kwicSubject.addObserver(shift);
+                  kwicSubject.addObserver(alphabetizer);
+                  kwicSubject.addObserver(output);
+                  // 逐步调用各个观察者
+                  kwicSubject.startKWIC();
+              }
+          }
+            </pre>
+          </div> 
+          <div class="original-code">
+            <pre>
+              //Pipe管道类
+              public class Pipe {
+            
+                private Scanner pipeReader;
+                private PrintWriter pipeWriter;
+                Pipe(){
+                        
+                    PipedWriter pipedWriter = new PipedWriter();
+                    PipedReader pipedReader = new PipedReader();
+                    try {
+                        
+                        pipedWriter.connect(pipedReader);
+                    } catch (IOException e) {
+                        
+                        e.printStackTrace();
+                    }
+                    pipeReader = new Scanner(pipedReader);
+                    pipeWriter = new PrintWriter(pipedWriter);
+                }
+                public String readerLine(){
+                        
+                    return pipeReader.nextLine();
+                }
+                public boolean hashNextLine(){
+                        
+                    return pipeReader.hasNext();
+                }
+                public void writerLine(String strLine){
+                        
+                    pipeWriter.println(strLine);
+                }
+                public void closeReader(){
+                        
+                    pipeReader.close();
+                }
+                public void closeWriter(){
+                        
+                    pipeWriter.close();
+                }
+            }
+
+            // Filter抽象类
+            public abstract class Filter {
+            
+              protected Pipe input;
+              protected Pipe output;
+          
+              public Filter(Pipe input, Pipe output) {
+                      
+                  this.input = input;
+                  this.output = output;
+              }
+              protected abstract void transform() throws IOException;
+          }
+            //Input输入过滤器类
+            public class Input extends Filter {
+            
+              private File file;
+              public Input(File file,Pipe output) {
+                      
+                  super(null, output);
+                  this.file = file;
+              }
+          
+              @Override
+              protected void transform() throws IOException {
+                      
+                  BufferedReader inputFile = null;
+                  try {
+                      
+                      inputFile = new BufferedReader(new FileReader(file));
+                  } catch (Exception e) {
+                      
+                      e.printStackTrace();
+                  }
+                  String line;
+                  try {
+                      
+                      while ((line = inputFile.readLine()) != null) {
+                      
+                          output.writerLine(line);
+                      }
+                  } catch (IOException e) {
+                      
+                      e.printStackTrace();
+                  }
+                  output.closeWriter();
+              }
+          }
+
+            // Shift单词移位过滤器类
+            public class Shift extends Filter {
+            
+
+              public Shift(Pipe input, Pipe output) {
+                      
+                  super(input, output);
+              }
+          
+              @Override
+              protected void transform() throws IOException {
+                      
+                  //获取每个单词，存入tokens
+                  while (input.hashNextLine()) {
+                      
+                      StringTokenizer token = new StringTokenizer(input.readerLine());
+                      ArrayList<String> tokens = new ArrayList<String>();
+                      int i = 0;
+                      //循环添加单词
+                      int count = token.countTokens();
+                      while (i < count) {
+                      
+                          tokens.add(token.nextToken());
+                          i++;
+                      }
+          
+                      //display(tokens);
+                      //切割各个单词，不断改变起始值和利用loop实现位移。
+                      for (i = 0; i < count; i++) {
+                      
+                          StringBuffer lineBuffer = new StringBuffer();
+                          int index = i;
+                          for (int f = 0; f < count; f++) {
+                      
+                              //从头继续位移
+                              if (index >= count)
+                                  index = 0;
+                              //存入StringBuffer
+                              lineBuffer.append(tokens.get(index));
+                              lineBuffer.append(" ");
+                              index++;
+                          }
+                          String tmp = lineBuffer.toString();
+                          output.writerLine(tmp);
+                      }
+                  }
+                  input.closeReader();
+                  output.closeWriter();
+              }
+          }
+
+          // Alphabetizer排序过滤器类
+          public class Alphabetizer extends Filter {
+            
+            private ArrayList<String> kwicList = new ArrayList<>();
+            public Alphabetizer(Pipe input, Pipe output) {
+                    
+                super(input, output);
+            }
+        
+              @Override
+              protected void transform() throws IOException {
+                      
+                  while (input.hashNextLine()){
+                      
+                      kwicList.add(input.readerLine());
+                  }
+                      Collections.sort(this.kwicList, new AlphabetizerComparator());
+                      for (String line:kwicList){
+                          
+                          output.writerLine(line);
+                      }
+                      input.closeReader();
+                      output.closeWriter();
+                  }
+                private class AlphabetizerComparator implements Comparator<String> {
+                    
+                @Override
+                public int compare(String o1, String o2) {
+                    
+                    if (o1 == null && o2 == null) {
+                    
+                        throw new NullPointerException();
+                    }
+                        int compareValue = 0;
+                        char o1c = o1.toLowerCase().charAt(0); //忽略大小写
+                        char o2c = o2.toLowerCase().charAt(0); //忽略大小写
+                        compareValue = o1c - o2c;
+                        return compareValue;
+            
+                    }
+            
+                }
+            } 
+            // Output输出过滤器类
+            public class Output extends Filter {
+            
+              private File file;
+              public Output(File file,Pipe input) {
+                      
+                  super(input, null);
+                  this.file = file;
+              }
+          
+              @Override
+              protected void transform() throws IOException {
+                      
+                  BufferedWriter outputFile =null;
+                  String line;
+                  try {
+                      
+                      outputFile = new BufferedWriter(new FileWriter(file));
+                      while (input.hashNextLine()) {
+                      
+                          outputFile.write(input.readerLine()+"\n");
+                      }
+                  }catch (IOException e){
+                      
+                      e.printStackTrace();
+                  }finally {
+                      
+                        try {
+                        
+                            if (outputFile!=null) {
+                        
+                                outputFile.close();
+                            }
+                        } catch (IOException e) {
+                        
+                            e.printStackTrace();
+                        }
+                    }
+                    input.closeReader();
+                }
+            }
+
+            // Main类
+            public class Main {
+            
+              public static void main(String[] args) throws IOException {
+                      
+                  File inFile = new File("E:\\input.txt");
+                  File outFile = new File("E:\\output.txt");
+                  Pipe pipe1 = new Pipe();
+                  Pipe pipe2 = new Pipe();
+                  Pipe pipe3 = new Pipe();
+                  Input input = new Input(inFile, pipe1);
+                  Shift shift = new Shift(pipe1, pipe2);
+                  Alphabetizer alphabetizer  = new Alphabetizer(pipe2, pipe3);
+                  Output output = new Output(outFile,pipe3);
+                  input.transform();
+                  shift.transform();
+                  alphabetizer.transform();
+                  output.transform();
+          
+                }
+            }
+            </pre>
+          </div>     
+        </div>
+      </div>
+      <div class="right">
+        <span>排序后的结果：</span>
+        <div class="sort-txt"></div>
+        
+      </div>
+    </div>   
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    document.querySelector('.main').addEventListener('click',async e => {
+      if(e.target.tagName === 'A'){
+        // 获取上传的文件
+        const files = document.querySelector('.file .upload').files
+        // 如果未上传文件，结束回调
+        if(files.length === 0) return alert('请先上传文件！')
+        // 获取文件内容
+        const fd = new FormData()
+        fd.append('inputFile',files[0])
+        // 获取当前的体系结构id值
+        const id = +e.target.dataset.id
+        // 发送请求
+        const result = await axios({
+          url: `http://localhost:8080/api/start/${id + 1}`,
+          method:'post',
+          data:fd
+        })
+    
+        // 选中的体系结构加高亮
+        const activeChoice = document.querySelector('.main .active')
+        if(!activeChoice) {
+          e.target.classList.add('active')
+        } else {
+          activeChoice.classList.remove('active')
+          e.target.classList.add('active')
+        }
+        
+        // 展示结果
+        const txt = result.data.data.join('<br>')
+        document.querySelector('.result .sort-txt').innerHTML = txt
+        
+        document.querySelector('.result .left .img span:nth-child(2)').innerText = ''
+        const activeImg = document.querySelector('.result .left .img .active')
+        if(!activeImg){
+          document.querySelectorAll('.result .left img')[id].classList.add('active')
+        } else {
+          activeImg.classList.remove('active')
+          document.querySelectorAll('.result .left img')[id].classList.add('active')
+        }
+
+        document.querySelector('.result .left .code span:nth-child(2)').innerText = ''
+        const activeCode = document.querySelector('.result .left .code .active')
+        if(!activeCode){
+          document.querySelectorAll('.result .left .original-code')[id].classList.add('active')
+        } else {
+          activeCode.classList.remove('active')
+          document.querySelectorAll('.result .left .original-code')[id].classList.add('active')
+        }
+      }
+    })
+  </script>
+</body>
+</html>
